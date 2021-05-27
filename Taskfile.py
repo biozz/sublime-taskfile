@@ -14,12 +14,12 @@ yaml = importer.load_module('yaml')
 
 
 class RunTaskCommand(sublime_plugin.WindowCommand):
-	def run(self):
+    def run(self):
         taskfile = open(cwd / 'Taskfile.yml')
         res = yaml.load(taskfile, Loader=yaml.FullLoader)
         tasks_keys = list([t for t in res.get('tasks')])
-		on_done = partial(run_task_by_index, self.window)
-		self.window.show_quick_panel(tasks_keys, on_done)
+        on_done = partial(run_task_by_index, self.window)
+        self.window.show_quick_panel(tasks_keys, on_done)
 
 def run_task_by_index(window, task_index):
 	window.run_command('exec', args={'shell_cmd': f'task {tasks_keys[task_index]}'})
