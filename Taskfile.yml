@@ -1,7 +1,16 @@
 version: '3'
 
 tasks:
-  hello:
+  lint:
+    summary: |
+      Lint source code with black and isort.
     cmds:
-      - echo 'Hello World from Task!'
-    silent: true
+      - black .
+      - isort .
+      - autoflake .
+  clean:
+    summary: Remove temporary and cache files.
+    cmds:
+      - find . -name '*.pyc' | xargs rm -rf
+      - find . -name '*__pycache__' | xargs rm -rf
+      - find . -name '*.cache' | xargs rm -rf
