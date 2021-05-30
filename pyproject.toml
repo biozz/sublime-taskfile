@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sublime-taskfile"
-version = "0.1.1"
+version = "0.2.0"
 description = "A Sublime Text 4 plugin for running Taskfile tasks"
 authors = ["Ivan Elfimov <ielfimov@gmail.com>"]
 license = "MIT"

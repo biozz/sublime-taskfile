@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.2.0 - 2021-05-30
+
+- Add handling of project folders
+- Fix working directory of the Taskfile
+- Remove unused `os` import
+- Refactor paths to use `pathlib.Path`
+- Fix handling of exit from `Run Task` menu via `Esc`
+
 ## v0.1.1 - 2021-05-29
 
 Fix versions in messages.
