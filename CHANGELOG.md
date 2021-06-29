@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.0 - 2021-06-29
+
+- Remove vendor and use Package Control's `pyyaml` dependency
+
 ## v0.2.0 - 2021-05-30
 
 - Add handling of project folders

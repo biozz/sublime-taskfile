@@ -1,34 +1,9 @@
-import zipimport
 from functools import partial
 from pathlib import Path
 
 import sublime
 import sublime_plugin
-
-cwd = Path(__file__).parent
-
-
-PLATFORM_TO_ARCH_TO_WHL = {
-    "osx": {
-        "x64": "PyYAML-5.4.1-cp38-cp38-macosx_10_9_x86_64.whl",
-    },
-    "linux": {
-        "x64": "PyYAML-5.4.1-cp38-cp38-manylinux1_x86_64.whl",
-        "arm64": "PyYAML-5.4.1-cp38-cp38-manylinux2014_aarch64.whl",
-    },
-    "windows": {
-        "x86": "PyYAML-5.4.1-cp38-cp38-win32.whl",
-        "x64": "PyYAML-5.4.1-cp38-cp38-win_amd64.whl",
-    },
-}
-platform = sublime.platform()
-arch = sublime.arch()
-whl = PLATFORM_TO_ARCH_TO_WHL.get(platform, {}).get(arch)
-if not whl:
-    raise Exception("This platform or architecture is not supported")
-pack_path = cwd / "vendor" / whl
-importer = zipimport.zipimporter(pack_path.resolve())
-yaml = importer.load_module("yaml")
+import yaml
 
 
 class RunTaskCommand(sublime_plugin.WindowCommand):
