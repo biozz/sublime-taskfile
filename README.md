@@ -10,6 +10,10 @@ A Sublime Text 4 plugin for running tasks from [Taskfile](https://taskfile.dev).
 - uses [Sublime's python version 3.8](https://www.sublimetext.com/docs/api_environments.html#selecting_python_version)
 - uses [`pyyaml`](https://github.com/packagecontrol/pyyaml) dependency
 
+## Installation
+
+The plugin is still waiting for approval at package control repo ([!8283](https://github.com/wbond/package_control_channel/pull/8283)), so it is not possible install via Package Control at the moment.
+
 ## Contributing
 
 You are welcome to submit pull requests with bug fixes and improvements.
