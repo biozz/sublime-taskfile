@@ -1,6 +1,6 @@
 # Changelog
 
-## unreleased
+## v0.3.1 - 2021-06-29
 
 - Add `.gitattributes` with `export-ignore` directives
 
