@@ -1,0 +1,11 @@
+# Files and directories with the attribute export-ignore won’t be added to
+# archive files. See http://git-scm.com/docs/gitattributes for details.
+
+/*.gif            export-ignore
+/.gitattributes   export-ignore
+/.editorconfig    export-ignore
+/.gitignore       export-ignore
+/pyproject.toml   export-ignore
+/poetry.lock      export-ignore
+/.python-version  export-ignore
+/Taskfile.yml     export-ignore
