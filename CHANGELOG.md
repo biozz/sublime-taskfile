@@ -1,5 +1,9 @@
 # Changelog
 
+## unreleased
+
+- Add `.gitattributes` with `export-ignore` directives
+
 ## v0.3.0 - 2021-06-29
 
 - Remove vendor and use Package Control's `pyyaml` dependency
