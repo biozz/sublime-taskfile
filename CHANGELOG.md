@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.2 - 2021-07-01
+
+- Fix `messages.json` format
+
 ## v0.3.1 - 2021-06-29
 
 - Add `.gitattributes` with `export-ignore` directives
