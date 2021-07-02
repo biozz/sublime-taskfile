@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.3 - 2021-07-02
+
+- Update `README.md` with notes about installation and linting of the source code
+
 ## v0.3.2 - 2021-07-01
 
 - Fix `messages.json` format

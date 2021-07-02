@@ -12,10 +12,10 @@ A Sublime Text 4 plugin for running tasks from [Taskfile](https://taskfile.dev).
 
 ## Installation
 
-The plugin is still waiting for approval at package control repo ([!8283](https://github.com/wbond/package_control_channel/pull/8283)), so it is not possible install via Package Control at the moment.
+Use `Package Control: Install Package` command and search for `Taskfile`.
 
 ## Contributing
 
 You are welcome to submit pull requests with bug fixes and improvements.
 
-Please lint your files with `task lint` before submition.
+Please lint your files with `black` before submition.
