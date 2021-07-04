@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.4 - 2021-07-04
+
+- Remove `.python-version` from my global `.gitignore` to fix the issue when plugin picked up wrong python version (3.3 instead of 3.8)
+
 ## v0.3.3 - 2021-07-02
 
 - Update `README.md` with notes about installation and linting of the source code
