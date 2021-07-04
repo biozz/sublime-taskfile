@@ -1,5 +1,7 @@
 # Sublime Taskfile
 
+![Package Control](https://img.shields.io/packagecontrol/dt/Taskfile)
+
 A Sublime Text 4 plugin for running tasks from [Taskfile](https://taskfile.dev). It adds `Taskfile: Run Task` to your command palette and you can select which task to run. The output of the task is than displayed in the quick panel on the bottom.
 
 It is also possible to initialize the `Taskfile` with `Taskfile: Init` command, which basically does `task -i` in one of the project directories you chose.
