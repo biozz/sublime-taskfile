@@ -1,3 +1,4 @@
 [
+    {"caption": "Taskfile: Init", "command": "init"},
 	{"caption": "Taskfile: Run Task", "command": "run_task"}
 ]

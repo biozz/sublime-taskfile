@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.4.0 - 2021-07-05
+
+- Add `Taskfile: Init` command
+
 ## v0.3.4 - 2021-07-04
 
 - Remove `.python-version` from my global `.gitignore` to fix the issue when plugin picked up wrong python version (3.3 instead of 3.8)

@@ -6,6 +6,18 @@ import sublime_plugin
 import yaml
 
 
+class InitCommand(sublime_plugin.WindowCommand):
+    def run(self):
+        folders = self.window.folders()
+        if not folders:
+            self.window.status_message("You have to be in a directory for init to work")
+            return
+        # TODO: check if Taskfile has been initialized already and filter out these folders
+        if len(folders) > 1:
+            on_done = partial(initialize_taskfile, self.window, folders)
+            self.window.show_quick_panel(folders, on_done)
+
+
 class RunTaskCommand(sublime_plugin.WindowCommand):
     def run(self):
         folders = self.window.folders()
@@ -18,6 +30,12 @@ class RunTaskCommand(sublime_plugin.WindowCommand):
         items = get_quick_panel_items(res)
         on_done = partial(run_task_by_index, self.window, items, str(working_dir_path))
         self.window.show_quick_panel(items, on_done, sublime.MONOSPACE_FONT)
+
+
+def initialize_taskfile(window, quick_panel_items, index):
+    window.run_command(
+        "exec", args={"shell_cmd": f"task -i", "working_dir": quick_panel_items[index]}
+    )
 
 
 def run_task_by_index(window, quick_panel_items, working_dir, index):
