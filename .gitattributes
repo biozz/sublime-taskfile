@@ -7,5 +7,4 @@
 /.gitignore       export-ignore
 /pyproject.toml   export-ignore
 /poetry.lock      export-ignore
-/.python-version  export-ignore
 /Taskfile.yml     export-ignore

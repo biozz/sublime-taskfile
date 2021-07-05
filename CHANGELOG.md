@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.4.1 - 2021-07-05
+
+- Remove `.python-version` from export-ignore
+
 ## v0.4.0 - 2021-07-05
 
 - Add `Taskfile: Init` command
