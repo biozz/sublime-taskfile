@@ -1,5 +1,5 @@
+import os
 from functools import partial
-from pathlib import Path
 
 import sublime
 import sublime_plugin
@@ -24,9 +24,9 @@ class RunTaskCommand(sublime_plugin.WindowCommand):
         if not folders or len(folders) > 1:
             self.window.status_message("Only one folder per project is supported.")
             return
-        working_dir_path = Path(folders[0])
-        taskfile_path = working_dir_path / "Taskfile.yml"
-        res = yaml.load(taskfile_path.open(), Loader=yaml.FullLoader)
+        working_dir_path = folders[0]
+        taskfile_path = os.path.join(working_dir_path, "Taskfile.yml")
+        res = yaml.load(open(taskfile_path), Loader=yaml.FullLoader)
         items = get_quick_panel_items(res)
         on_done = partial(run_task_by_index, self.window, items, str(working_dir_path))
         self.window.show_quick_panel(items, on_done, sublime.MONOSPACE_FONT)
@@ -34,7 +34,7 @@ class RunTaskCommand(sublime_plugin.WindowCommand):
 
 def initialize_taskfile(window, quick_panel_items, index):
     window.run_command(
-        "exec", args={"shell_cmd": f"task -i", "working_dir": quick_panel_items[index]}
+        "exec", args={"shell_cmd": "task -i", "working_dir": quick_panel_items[index]}
     )
 
 
@@ -43,7 +43,11 @@ def run_task_by_index(window, quick_panel_items, working_dir, index):
         return
     task_name = quick_panel_items[index].trigger
     window.run_command(
-        "exec", args={"shell_cmd": f"task {task_name}", "working_dir": working_dir}
+        "exec",
+        args={
+            "shell_cmd": "task {task_name}".format(task_name=task_name),
+            "working_dir": working_dir,
+        },
     )
 
 

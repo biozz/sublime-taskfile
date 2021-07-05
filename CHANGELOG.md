@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.5.0 - 2021-07-05
+
+I had to rewrite the plugin to support Python 3.3, because there are some issues (https://github.com/wbond/package_control/issues/1570#issue-900010126) with loading Python 3.8 modules.
+
+The previous work lives at `python38` branch and will be braught back once the issue is resolved.
+
 ## v0.4.1 - 2021-07-05
 
 - Remove `.python-version` from export-ignore
