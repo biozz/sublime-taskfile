@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.5.1 - 2021-07-06
+
+Update readme regarding python version.
+
 ## v0.5.0 - 2021-07-05
 
 I had to rewrite the plugin to support Python 3.3, because there are some issues (https://github.com/wbond/package_control/issues/1570#issue-900010126) with loading Python 3.8 modules.
