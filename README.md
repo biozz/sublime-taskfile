@@ -8,12 +8,9 @@ It is also possible to initialize the `Taskfile` with `Taskfile: Init` command, 
 
 ![Usage](Usage.gif)
 
-## Caveats
-
 - made for Sublime Text 4
-- uses [Sublime's python version 3.8](https://www.sublimetext.com/docs/api_environments.html#selecting_python_version)
+- uses [Sublime's python version 3.3](https://www.sublimetext.com/docs/api_environments.html#selecting_python_version), but waiting to migrate to 3.8 once dependencies issue is resolved, see [v0.5.0](https://github.com/biozz/sublime-taskfile/releases/tag/v0.5.0) release notes for more details
 - uses [`pyyaml`](https://github.com/packagecontrol/pyyaml) dependency
-- as a result of the above dependency local development can be difficult, but you can try executing `sys.path.append('/Users/<user>/Library/Application Support/Sublime Text/Packages/pyyaml/st3/yaml')`
 
 ## Installation
 
