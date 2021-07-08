@@ -4,6 +4,10 @@ from functools import partial
 import sublime
 import sublime_plugin
 import yaml
+import time
+
+
+TASKFILE_NAME = "Taskfile.yml"
 
 
 class InitCommand(sublime_plugin.WindowCommand):
@@ -12,10 +16,18 @@ class InitCommand(sublime_plugin.WindowCommand):
         if not folders:
             self.window.status_message("You have to be in a directory for init to work")
             return
-        # TODO: check if Taskfile has been initialized already and filter out these folders
-        if len(folders) > 1:
-            on_done = partial(initialize_taskfile, self.window, folders)
-            self.window.show_quick_panel(folders, on_done)
+        folders = list(
+            filter(
+                lambda x: not os.path.exists(os.path.join(x, TASKFILE_NAME)), folders
+            )
+        )
+        if not folders:
+            self.window.status_message("Taskfile exists in all open folders.")
+        if len(folders) == 1:
+            initialize_taskfile(self.window, folders, 0)
+            return
+        on_done = partial(initialize_taskfile, self.window, folders)
+        self.window.show_quick_panel(folders, on_done)
 
 
 class RunTaskCommand(sublime_plugin.WindowCommand):
@@ -33,9 +45,17 @@ class RunTaskCommand(sublime_plugin.WindowCommand):
 
 
 def initialize_taskfile(window, quick_panel_items, index):
+    if index < 0:
+        return
     window.run_command(
         "exec", args={"shell_cmd": "task -i", "working_dir": quick_panel_items[index]}
     )
+    # It is nice to have initialized file opened in the editor after creation.
+    # The problem is Sublime Text is too fast and opens empty file, so I added
+    # a small timeout for openning.
+    taskfile_path = os.path.join(quick_panel_items[index], TASKFILE_NAME)
+    open_file = partial(window.open_file, taskfile_path)
+    sublime.set_timeout(open_file, 500)
 
 
 def run_task_by_index(window, quick_panel_items, working_dir, index):

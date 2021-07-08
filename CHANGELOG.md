@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.6.0 - 2021-07-08
+
+Taskfile initialization improvements
+
+- Fix Taskfile initialization
+- Open Taskfile after initialization with a small delay
+- Properly handle Taskfile initialization if multiple folders are opened
+
 ## v0.5.1 - 2021-07-06
 
 Update readme regarding python version.
