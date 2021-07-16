@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.7.0 - 2021-07-16
+
+Refactor and improve multiple folders handling.
+
 ## v0.6.0 - 2021-07-08
 
 Taskfile initialization improvements
