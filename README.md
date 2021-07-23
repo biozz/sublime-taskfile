@@ -12,10 +12,13 @@ It is also possible to initialize the `Taskfile` with `Taskfile: Init` command, 
 - uses [Sublime's python version 3.3](https://www.sublimetext.com/docs/api_environments.html#selecting_python_version), but waiting to migrate to 3.8 once dependencies issue is resolved, see [v0.5.0](https://github.com/biozz/sublime-taskfile/releases/tag/v0.5.0) release notes for more details
 - uses [`pyyaml`](https://github.com/packagecontrol/pyyaml) dependency
 - properly handles multiple open directories
+- does not and will not ship any custom syntax definitions (see installation notes for more details)
 
 ## Installation
 
 Use `Package Control: Install Package` command and search for `Taskfile`.
+
+If you want to have a hints on which keys are available and what they do, there is an [official JSON schema for Taskfile](https://json.schemastore.org/taskfile.json), which can be loaded automatically once you install [LSP](packagecontrol.io/packages/LSP) and [LSP-yaml](https://packagecontrol.io/packages/LSP-yaml) packages.
 
 ## Contributing
 
