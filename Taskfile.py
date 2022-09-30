@@ -1,10 +1,10 @@
 import os
+import subprocess
 import time
 from functools import partial
 
 import sublime
 import sublime_plugin
-import yaml
 
 TASKFILE_NAME = "Taskfile.yml"
 
@@ -61,9 +61,7 @@ class RunTaskCommand(sublime_plugin.WindowCommand):
         if index < 0:
             return
         folder = folders[index]
-        taskfile_path = os.path.join(folder, TASKFILE_NAME)
-        res = yaml.load(open(taskfile_path), Loader=yaml.FullLoader)
-        items = self.get_tasks_quick_panel_items(res)
+        items = self.get_tasks_quick_panel_items(folder)
         on_done = partial(self.run_task, items, str(folder))
         self.window.show_quick_panel(items, on_done)
 
@@ -79,13 +77,27 @@ class RunTaskCommand(sublime_plugin.WindowCommand):
             },
         )
 
-    def get_tasks_quick_panel_items(self, taskfile):
+    def get_tasks_quick_panel_items(self, folder):
         result = []
-        for task_name, task in taskfile.get("tasks").items():
-            summary = task.get("summary")
-            if summary:
-                summary = summary.split("\n")[0]
-            item = sublime.QuickPanelItem(task_name, summary)
+        # -s flag (silent output) will not work here, because I need task descriptions
+        # the downside is that I have to parse human-readable output of the command
+        list_all_result = subprocess.run(
+            ["task", "--list-all"], capture_output=True, cwd=folder
+        )
+        if list_all_result.returncode != 0:
+            print(list_all_result.stderr.decode())
+            self.window.status_message(
+                "Unable list tasks: see Sublime's console for more info"
+            )
+            return []
+        # Stdout is sliced because the first line is a general Taskfile message
+        tasks = list_all_result.stdout.decode().split("* ")[1:]
+        for task in tasks:
+            name_raw, summary_raw = task.split("\t")
+            # The name of each task ends with colon and a space, they need to be removed
+            name = name_raw[:-2]
+            summary = summary_raw.strip().replace("\n\n", "\n").split("\n")
+            item = sublime.QuickPanelItem(name, summary)
             result.append(item)
         return result
 

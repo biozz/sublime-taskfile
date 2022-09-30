@@ -2,14 +2,14 @@ version: '3'
 
 tasks:
   lint:
-    summary: |
-      Lint source code with black and isort.
+    desc: |
+      Lint source code with various utilities.
     cmds:
       - black .
       - isort .
       - autoflake .
   clean:
-    summary: Remove temporary and cache files.
+    desc: Remove temporary and cache files.
     cmds:
       - find . -name '*.pyc' | xargs rm -rf
       - find . -name '*__pycache__' | xargs rm -rf

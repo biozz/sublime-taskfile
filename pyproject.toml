@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sublime-taskfile"
-version = "0.7.0"
+version = "0.8.0"
 description = "A Sublime Text 4 plugin for Taskfile management"
 authors = ["Ivan Elfimov <ielfimov@gmail.com>"]
 license = "MIT"
@@ -9,9 +9,9 @@ license = "MIT"
 python = "3.8"
 
 [tool.poetry.dev-dependencies]
-isort = "^5.8.0"
-black = "^21.5b1"
-autoflake = "^1.4"
+isort = "5.10.1"
+black = "22.8.0"
+autoflake = "1.6.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
