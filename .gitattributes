@@ -8,3 +8,5 @@
 /pyproject.toml   export-ignore
 /poetry.lock      export-ignore
 /Taskfile.yml     export-ignore
+/.github           export-ignore
+/tests             export-ignore

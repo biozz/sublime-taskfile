@@ -5,9 +5,18 @@ tasks:
     desc: |
       Lint source code with various utilities.
     cmds:
-      - black .
-      - isort .
-      - autoflake .
+      - poetry run black --check .
+      - poetry run isort --check-only .
+      - poetry run autoflake --check --recursive Taskfile.py tests
+  format:
+    desc: Format Python source code.
+    cmds:
+      - poetry run black .
+      - poetry run isort .
+  test:
+    desc: Run plugin regression tests.
+    cmds:
+      - poetry run python -m unittest discover -s tests -v
   clean:
     desc: Remove temporary and cache files.
     cmds:

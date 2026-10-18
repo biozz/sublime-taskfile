@@ -1,6 +1,6 @@
 import os
+import re
 import subprocess
-import time
 from functools import partial
 
 import sublime
@@ -16,26 +16,28 @@ class InitCommand(sublime_plugin.WindowCommand):
             self.window.status_message("You have to be in a directory for init to work")
             return
         folders_with_taskfile = get_folders_with_taskfile(folders)
-        folders_without_taskfile = list(set(folders) - set(folders_with_taskfile))
+        folders_without_taskfile = [
+            folder for folder in folders if folder not in folders_with_taskfile
+        ]
         if len(folders_without_taskfile) == 0:
             self.window.status_message("Taskfile exists in all open folders")
             return
         if len(folders_without_taskfile) == 1:
             self.initialize_taskfile(folders_without_taskfile, 0)
             return
-        on_done = partial(self.initialize_taskfile, folders)
-        self.window.show_quick_panel(folders, on_done)
+        on_done = partial(self.initialize_taskfile, folders_without_taskfile)
+        self.window.show_quick_panel(folders_without_taskfile, on_done)
 
     def initialize_taskfile(self, quick_panel_items, index):
         if index < 0:
             return
         self.window.run_command(
             "exec",
-            args={"shell_cmd": "task -i", "working_dir": quick_panel_items[index]},
+            args={"cmd": ["task", "--init"], "working_dir": quick_panel_items[index]},
         )
         # It is nice to have initialized file opened in the editor after creation.
         # The problem is Sublime Text is too fast and opens empty file, so I added
-        # a small timeout for openning.
+        # a small timeout for opening.
         taskfile_path = os.path.join(quick_panel_items[index], TASKFILE_NAME)
         open_file = partial(self.window.open_file, taskfile_path)
         sublime.set_timeout(open_file, 500)
@@ -62,6 +64,8 @@ class RunTaskCommand(sublime_plugin.WindowCommand):
             return
         folder = folders[index]
         items = self.get_tasks_quick_panel_items(folder)
+        if not items:
+            return
         on_done = partial(self.run_task, items, str(folder))
         self.window.show_quick_panel(items, on_done)
 
@@ -72,7 +76,7 @@ class RunTaskCommand(sublime_plugin.WindowCommand):
         self.window.run_command(
             "exec",
             args={
-                "shell_cmd": "task {task_name}".format(task_name=task_name),
+                "cmd": ["task", task_name],
                 "working_dir": working_dir,
             },
         )
@@ -81,24 +85,38 @@ class RunTaskCommand(sublime_plugin.WindowCommand):
         result = []
         # -s flag (silent output) will not work here, because I need task descriptions
         # the downside is that I have to parse human-readable output of the command
-        list_all_result = subprocess.run(
-            ["task", "--list-all"], capture_output=True, cwd=folder
-        )
-        if list_all_result.returncode != 0:
-            print(list_all_result.stderr.decode())
+        try:
+            list_all_result = subprocess.run(
+                ["task", "--list-all", "--color=false"],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                cwd=folder,
+                timeout=30,
+            )
+        except (OSError, subprocess.TimeoutExpired) as error:
+            print("Taskfile: {}".format(error))
             self.window.status_message(
-                "Unable list tasks: see Sublime's console for more info"
+                "Unable to list tasks: check that task is installed and on PATH"
             )
             return []
-        # Stdout is sliced because the first line is a general Taskfile message
-        tasks = list_all_result.stdout.decode().split("* ")[1:]
-        for task in tasks:
-            name_raw, summary_raw = task.split("\t")
-            # The name of each task ends with colon and a space, they need to be removed
-            name = name_raw[:-2]
+        if list_all_result.returncode != 0:
+            print(list_all_result.stderr)
+            self.window.status_message(
+                "Unable to list tasks: see Sublime's console for more info"
+            )
+            return []
+        # Task uses aligned whitespace, which can be tabs or spaces. Anchor at
+        # the task marker so descriptions containing '* ' are preserved.
+        for task in re.finditer(
+            r"^\* (.+?):[ \t]+(.*?)(?=^\* |\Z)",
+            list_all_result.stdout,
+            re.MULTILINE | re.DOTALL,
+        ):
+            name, summary_raw = task.groups()
             summary = summary_raw.strip().replace("\n\n", "\n").split("\n")
-            item = sublime.QuickPanelItem(name, summary)
-            result.append(item)
+            result.append(sublime.QuickPanelItem(name, summary))
         return result
 
     def get_folders_quick_panel_items(self, folders):
@@ -106,6 +124,18 @@ class RunTaskCommand(sublime_plugin.WindowCommand):
 
 
 def get_folders_with_taskfile(folders):
-    return list(
-        filter(lambda x: os.path.exists(os.path.join(x, TASKFILE_NAME)), folders)
+    names = (
+        "Taskfile.yml",
+        "Taskfile.yaml",
+        "taskfile.yml",
+        "taskfile.yaml",
+        "Taskfile.dist.yml",
+        "Taskfile.dist.yaml",
+        "taskfile.dist.yml",
+        "taskfile.dist.yaml",
     )
+    return [
+        folder
+        for folder in folders
+        if any(os.path.isfile(os.path.join(folder, name)) for name in names)
+    ]

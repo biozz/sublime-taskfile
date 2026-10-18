@@ -1,22 +1,27 @@
-[tool.poetry]
+[project]
 name = "sublime-taskfile"
-version = "0.8.0"
+version = "0.9.0"
 description = "A Sublime Text 4 plugin for Taskfile management"
-authors = ["Ivan Elfimov <ielfimov@gmail.com>"]
+authors = [{name = "Ivan Elfimov", email = "ielfimov@gmail.com"}]
 license = "MIT"
+requires-python = ">=3.8,<3.15"
+dependencies = []
 
-[tool.poetry.dependencies]
-python = "3.8"
+[tool.poetry]
+package-mode = false
 
-[tool.poetry.dev-dependencies]
-isort = "5.10.1"
-black = "22.8.0"
-autoflake = "1.6.1"
+[tool.poetry.group.dev.dependencies]
+isort = {version = ">=5.13,<7", python = ">=3.10"}
+black = {version = ">=24.8,<27", python = ">=3.10"}
+autoflake = {version = "^2.3", python = ">=3.10"}
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=2.2.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.isort]
 profile = "black"
 multi_line_output = 3
+
+[tool.black]
+target-version = ["py38"]

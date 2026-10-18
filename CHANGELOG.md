@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.9.0 - 2026-10-18
+
+Update the plugin for current Sublime Text releases and Python 3.14, while keeping compatibility with older Sublime Text 4 builds.
+
+- support Python 3.8 through 3.14
+- update dev dependencies and Poetry configuration
+- add compatibility tests and CI for Linux, macOS and Windows
+- improve task list parsing and handle missing task executables and timeouts
+- support alternate Taskfile filenames
+- fix initialization folder selection
+- run tasks using argument lists
+- update README with compatibility and development instructions
+
 ## v0.8.0 - 2022-09-30
 
 The release started as a minor one to add support for includes (#4). But ended up as quite a big one, because recent releases of Taskfile added features, which allowed removal of `pyyaml` dependency and bumping internal python version to `3.8`.
