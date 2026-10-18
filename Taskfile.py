@@ -1,5 +1,5 @@
+import json
 import os
-import re
 import subprocess
 from functools import partial
 
@@ -83,11 +83,9 @@ class RunTaskCommand(sublime_plugin.WindowCommand):
 
     def get_tasks_quick_panel_items(self, folder):
         result = []
-        # -s flag (silent output) will not work here, because I need task descriptions
-        # the downside is that I have to parse human-readable output of the command
         try:
             list_all_result = subprocess.run(
-                ["task", "--list-all", "--color=false"],
+                ["task", "--list-all", "--json", "--color=false"],
                 capture_output=True,
                 text=True,
                 encoding="utf-8",
@@ -107,16 +105,19 @@ class RunTaskCommand(sublime_plugin.WindowCommand):
                 "Unable to list tasks: see Sublime's console for more info"
             )
             return []
-        # Task uses aligned whitespace, which can be tabs or spaces. Anchor at
-        # the task marker so descriptions containing '* ' are preserved.
-        for task in re.finditer(
-            r"^\* (.+?):[ \t]+(.*?)(?=^\* |\Z)",
-            list_all_result.stdout,
-            re.MULTILINE | re.DOTALL,
-        ):
-            name, summary_raw = task.groups()
-            summary = summary_raw.strip().replace("\n\n", "\n").split("\n")
-            result.append(sublime.QuickPanelItem(name, summary))
+        # Structured output is independent of Task's alignment and color codes.
+        try:
+            tasks = json.loads(list_all_result.stdout)["tasks"]
+            for task in tasks:
+                description = task.get("desc", "").strip()
+                details = description.replace("\n\n", "\n").split("\n")
+                result.append(sublime.QuickPanelItem(task["name"], details))
+        except (ValueError, KeyError, TypeError, AttributeError) as error:
+            print("Taskfile: invalid task listing: {}".format(error))
+            self.window.status_message(
+                "Unable to list tasks: see Sublime's console for more info"
+            )
+            return []
         return result
 
     def get_folders_quick_panel_items(self, folders):

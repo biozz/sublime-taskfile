@@ -1,4 +1,5 @@
 import importlib.util
+import json
 import os
 import subprocess
 import sys
@@ -32,21 +33,57 @@ class TaskfileTests(unittest.TestCase):
         self.command = plugin.RunTaskCommand()
         self.command.window = Mock()
 
-    def test_parse_tabs_spaces_namespaces_and_multiline_descriptions(self):
-        output = (
-            "task: Available tasks for this project:\n"
-            "* build:       Build with * special text\n"
-            "* app:test:\tRun tests\n  More details\n"
-            "* empty:       \n"
+    def test_parse_namespaces_and_multiline_descriptions(self):
+        output = json.dumps(
+            {
+                "tasks": [
+                    {"name": "build", "desc": "Build with * special text"},
+                    {"name": "app:test", "desc": "Run tests\n  More details\n"},
+                    {"name": "empty", "desc": ""},
+                ]
+            }
         )
         with patch.object(plugin.subprocess, "run") as run:
             run.return_value = subprocess.CompletedProcess([], 0, output, "")
             items = self.command.get_tasks_quick_panel_items("/project")
+        run.assert_called_once_with(
+            ["task", "--list-all", "--json", "--color=false"],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            cwd="/project",
+            timeout=30,
+        )
         self.assertEqual(
             [item.trigger for item in items], ["build", "app:test", "empty"]
         )
         self.assertEqual(items[0].details, ["Build with * special text"])
         self.assertEqual(items[1].details, ["Run tests", "  More details"])
+        self.assertEqual(items[2].details, [""])
+
+    def test_empty_json_listing(self):
+        with patch.object(plugin.subprocess, "run") as run:
+            run.return_value = subprocess.CompletedProcess([], 0, '{"tasks": []}', "")
+            self.assertEqual(self.command.get_tasks_quick_panel_items("/project"), [])
+        self.command.window.status_message.assert_not_called()
+
+    def test_invalid_json_listing(self):
+        for output in (
+            "not JSON",
+            "{}",
+            '{"tasks": null}',
+            '{"tasks": [{"desc": "Missing name"}]}',
+        ):
+            with self.subTest(output=output), patch.object(
+                plugin.subprocess, "run"
+            ) as run:
+                self.command.window.reset_mock()
+                run.return_value = subprocess.CompletedProcess([], 0, output, "")
+                self.assertEqual(
+                    self.command.get_tasks_quick_panel_items("/project"), []
+                )
+                self.command.window.status_message.assert_called_once()
 
     def test_failed_task_listing(self):
         with patch.object(plugin.subprocess, "run") as run:
