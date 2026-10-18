@@ -54,3 +54,8 @@ poetry run autoflake --check --recursive Taskfile.py tests
 
 CI tests Python 3.8–3.14 on Linux, macOS and Windows using a stub of the Sublime
 API. Changes to editor behavior should also be checked inside Sublime Text.
+
+For releases, update the version in `pyproject.toml` and add a dated entry to
+`CHANGELOG.md`. Use that entry for the GitHub release description. Reserve
+Package Control upgrade messages for breaking changes, migration steps or other
+changes requiring user attention; routine fixes only need release notes.

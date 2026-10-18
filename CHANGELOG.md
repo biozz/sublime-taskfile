@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.9.1 - 2026-10-18
+
+Fix `Taskfile: Run Task` failing to open the task picker with current versions of
+Task. Task's space-aligned output could cause a `ValueError` in v0.8.0 (#6).
+
+Task discovery now reads `task --list-all --json`, removing its dependence on
+human-readable formatting. Task descriptions, multiline descriptions and included
+tasks remain available in the picker. Invalid listings show a status message
+instead of raising an exception.
+
 ## v0.9.0 - 2026-10-18
 
 Update the plugin for current Sublime Text releases and Python 3.14, while keeping compatibility with older Sublime Text 4 builds.
